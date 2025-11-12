@@ -5,16 +5,16 @@ import { cookies } from "next/headers";
 
 const SESSION_DURATION = 60 * 60 * 24 * 7;
 
-// Set session cookie
+
 export async function setSessionCookie(idToken: string) {
     const cookieStore = await cookies();
 
-    // Create session cookie
+
     const sessionCookie = await auth.createSessionCookie(idToken, {
         expiresIn: SESSION_DURATION * 1000, // milliseconds
     });
 
-    // Set cookie in the browser
+
     cookieStore.set("session", sessionCookie, {
         maxAge: SESSION_DURATION,
         httpOnly: true,
@@ -59,8 +59,7 @@ export async function signUp(params: SignUpParams) {
         await db.collection("users").doc(uid).set({
             name,
             email,
-            // profileURL,
-            // resumeURL,
+
         });
 
         return {
@@ -70,7 +69,7 @@ export async function signUp(params: SignUpParams) {
     } catch (e: any) {
         console.error("Error creating user:", e);
 
-        // Handle Firebase specific errors
+
         if (e.code === "auth/email-already-exists") {
             return {
                 success: false,
