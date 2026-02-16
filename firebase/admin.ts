@@ -6,7 +6,7 @@ const initFirebaseAdmin = () => {
     const apps = getApps();
 
     if (!apps.length) {
-
+        // 🔍 Debug log for environment
         console.log("🔍 Firebase ENV Check:", {
             FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
             FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL,
