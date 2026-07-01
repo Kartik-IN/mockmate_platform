@@ -1,6 +1,7 @@
 interface Feedback {
   id: string;
   interviewId: string;
+  userId: string;
   totalScore: number;
   categoryScores: Array<{
     name: string;
@@ -23,6 +24,14 @@ interface Interview {
   userId: string;
   type: string;
   finalized: boolean;
+  company?: string;
+  focus?: string;
+  resumeHighlights?: string;
+  generatedBy?: string;
+}
+
+interface InterviewWithFeedback extends Interview {
+  feedback?: Feedback | null;
 }
 
 interface CreateFeedbackParams {
@@ -39,12 +48,14 @@ interface User {
 }
 
 interface InterviewCardProps {
+  id?: string;
   interviewId?: string;
   userId?: string;
   role: string;
   type: string;
   techstack: string[];
   createdAt?: string;
+  feedback?: Feedback | null;
 }
 
 interface AgentProps {
@@ -54,6 +65,7 @@ interface AgentProps {
   feedbackId?: string;
   type: "generate" | "interview";
   questions?: string[];
+  interviewContext?: string;
 }
 
 interface RouteParams {
@@ -69,6 +81,11 @@ interface GetFeedbackByInterviewIdParams {
 interface GetLatestInterviewsParams {
   userId: string;
   limit?: number;
+}
+
+interface GetInterviewByIdParams {
+  interviewId: string;
+  userId: string;
 }
 
 interface SignInParams {
@@ -96,4 +113,16 @@ interface InterviewFormProps {
 
 interface TechIconProps {
   techStack: string[];
+}
+
+interface GenerateInterviewParams {
+  role: string;
+  level: string;
+  type: "technical" | "behavioral" | "mixed";
+  techstack: string[];
+  amount: number;
+  userid: string;
+  company?: string;
+  focus?: string;
+  resumeHighlights?: string;
 }

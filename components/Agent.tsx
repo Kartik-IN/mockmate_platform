@@ -28,7 +28,8 @@ const Agent = ({
                    feedbackId,
                    type,
                    questions,
-               }: AgentProps) => {
+                   interviewContext,
+                }: AgentProps) => {
     const router = useRouter();
     const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
     const [messages, setMessages] = useState<SavedMessage[]>([]);
@@ -135,6 +136,7 @@ const Agent = ({
             await vapi.start(interviewer, {
                 variableValues: {
                     questions: formattedQuestions,
+                    interviewContext,
                 },
             });
         }

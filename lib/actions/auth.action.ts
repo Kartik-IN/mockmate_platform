@@ -2,6 +2,8 @@
 
 import { auth, db } from "@/firebase/admin";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { unstable_noStore as noStore } from "next/cache";
 
 const SESSION_DURATION = 60 * 60 * 24 * 7;
 
@@ -36,8 +38,13 @@ export async function signIn(params: SignInParams) {
             };
 
         await setSessionCookie(idToken);
+
+        return {
+            success: true,
+            message: "Signed in successfully.",
+        };
     } catch (error: any) {
-        console.log("");
+        console.error("Error signing in:", error);
 
         return {
             success: false,
@@ -82,6 +89,39 @@ export async function signUp(params: SignUpParams) {
             success: false,
             message: "Failed to create account. Please try again.",
         };
+    }
+}
+
+export async function signOut() {
+    const cookieStore = await cookies();
+    cookieStore.delete("session");
+    redirect("/sign-in");
+}
+
+export async function getCurrentUser(): Promise<User | null> {
+    noStore();
+
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get("session")?.value;
+
+    if (!sessionCookie) return null;
+
+    try {
+        const decodedToken = await auth.verifySessionCookie(sessionCookie, true);
+        const userRecord = await db.collection("users").doc(decodedToken.uid).get();
+
+        if (!userRecord.exists) return null;
+
+        const userData = userRecord.data() as Omit<User, "id">;
+
+        return {
+            id: decodedToken.uid,
+            name: userData.name,
+            email: userData.email,
+        };
+    } catch (error) {
+        console.error("Error getting current user:", error);
+        return null;
     }
 }
 
